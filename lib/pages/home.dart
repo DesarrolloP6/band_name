@@ -1,6 +1,7 @@
 import 'package:band_names/models/band.dart';
 import 'package:band_names/services/socket_service.dart';
 import 'package:flutter/material.dart';
+import 'package:pie_chart/pie_chart.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
@@ -74,9 +75,16 @@ class _HomePageState extends State<HomePage> {
           )
         ],
       ),
-      body: ListView.builder(
-          itemCount: bandas.length,
-          itemBuilder: (_, idx) => _bandTitle(bandas[idx])),
+      body: Column(
+        children: [       
+          showGraf(),   
+          Expanded(
+            child: ListView.builder(
+                itemCount: bandas.length,
+                itemBuilder: (_, idx) => _bandTitle(bandas[idx])),
+          ),
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: addNewBand,
         elevation: 1,
@@ -149,5 +157,65 @@ class _HomePageState extends State<HomePage> {
     setState(() {});
 
     Navigator.pop(context);
+  }
+
+  Widget showGraf(){
+    // Map<String, double> dataMap = {
+    //   "Flutter": 5,
+    //   "React": 3,
+    //   "Xamarin": 2,
+    //   "Ionic": 2,
+    // };
+    Map<String, double> dataMap= {};
+    bandas.forEach((element) {
+      dataMap.putIfAbsent(element.name, () => element.votes.toDouble());
+    });
+
+    final List<Color> colorList = [
+      Colors.black,
+      Colors.amber,
+      Colors.blue,
+      Colors.brown,
+      Colors.cyan,
+      Colors.deepOrange,
+      Colors.deepPurple,
+      Colors.green,
+      Colors.grey,
+    ];
+
+    return Container(
+      width: double.infinity,
+      height: 200,
+      child: PieChart(
+        dataMap: dataMap,
+        animationDuration: const Duration(milliseconds: 400),
+        chartLegendSpacing: 50,
+        chartRadius: MediaQuery.of(context).size.width / 7,
+        colorList: colorList,
+        initialAngleInDegree: 0,
+        chartType: ChartType.ring,
+        ringStrokeWidth: 20,
+        centerText: "Bandas",
+        legendOptions: const LegendOptions(
+          showLegendsInRow: false,
+          legendPosition: LegendPosition.right,
+          showLegends: true,
+          // legendShape: _BoxShape.circle,
+          legendTextStyle: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        chartValuesOptions: const ChartValuesOptions(
+          showChartValueBackground: true,
+          showChartValues: true,
+          showChartValuesInPercentage: true,
+          showChartValuesOutside: false,
+          decimalPlaces: 0,
+        ),
+        // gradientList: ---To add gradient colors---
+        // emptyColorGradient: ---Empty Color gradient---
+      )
+    );
+   
   }
 }
