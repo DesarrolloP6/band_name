@@ -14,12 +14,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => SocketService(),)
+        ChangeNotifierProvider(create: (context) => SocketService())
       ],
       child: MaterialApp(
         title: 'Material App',
         debugShowCheckedModeBanner: false,
-        initialRoute: 'status',
+        initialRoute: 'home',
         routes: {
           'home':(context) => const HomePage(),
           'status':(context) => const StatusPage()

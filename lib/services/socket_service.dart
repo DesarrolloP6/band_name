@@ -3,36 +3,51 @@ import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 
 enum ServerStatus {
-  Online,
-  Offline,
-  Connecting
+  online,
+  offline,
+  connecting
 }
 
 class SocketService with ChangeNotifier {
 
-  ServerStatus _serverStatus = ServerStatus.Connecting;
+  ServerStatus _serverStatus = ServerStatus.connecting;
+  
+  late IO.Socket _socket;
 
-  get serverStatus => this._serverStatus;
+
+  ServerStatus get serverStatus => _serverStatus;
+  IO.Socket get socket => _socket;
 
   SocketService(){
+    
     _initConfig();
   }
 
   void _initConfig(){
-    IO.Socket socket = IO.io('http://192.168.30.69:3000/',{
+    
+    // _socket = IO.io('http://192.168.30.69:3000/', {
+    _socket = IO.io('http://192.168.30.69:3000/', 
+    {
       'transports': ['websocket'],
-      'autoconect':true
-    });
+      'autoconnect':true,
+    }
+    );
     
-    socket.onConnect((_) {      
-      _serverStatus=ServerStatus.Online;
+    _socket.onConnect((_) {      
+      _serverStatus=ServerStatus.online;
       notifyListeners();
     });
     
-    socket.onDisconnect((_) {
-      _serverStatus=ServerStatus.Offline;
+    _socket.onDisconnect((_) {
+      _serverStatus=ServerStatus.offline;
       notifyListeners();
     });
+
+    // socket.on('nuevo-mensaje', (payload) {
+    //   print('Nuevo mensaje:');
+    //   print('nombre:'  + payload['nombre']);
+    //   print('mensaje:' + payload['mensaje']);
+    // });
   }
 
 }
