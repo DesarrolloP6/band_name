@@ -167,6 +167,14 @@ class _HomePageState extends State<HomePage> {
     //   "Ionic": 2,
     // };
     Map<String, double> dataMap= {};
+
+    if (bandas.isEmpty) {
+      return Container( 
+        width: double.infinity,
+        height: 200,
+        child: const Text('sindata'),
+      );
+    }
     bandas.forEach((element) {
       dataMap.putIfAbsent(element.name, () => element.votes.toDouble());
     });
